@@ -10,7 +10,7 @@ We separate code by *purpose*:
 - **pages/**: route-level screens (URL pages)
 - **components/**: reusable UI building blocks
 - **layouts/**: shared page shells (Navbar/Sidebar wrappers)
-- **routes/**: routing rules + route guards
+- **routes/**: routing rules + route guards + where the user goes
 - **services/**: API calls + local storage helpers
 - **assets/**: images + global styles
 
@@ -87,16 +87,13 @@ Rule of thumb:
 ### `src/routes/`
 Routing configuration & access rules.
 
-
 ---
 
 ### `src/services/`
 Code for side effects (data & storage). Keeps API logic out of UI.
 
 **`services/api/`**
-- HTTP client setup (axios/fetch wrapper)
-- endpoints
-- interceptors for auth tokens / error handling
+- endpoints (where the data comes from)
 
 **`services/storage/`**
 - localStorage/sessionStorage helpers
