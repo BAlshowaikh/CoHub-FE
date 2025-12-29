@@ -1,39 +1,58 @@
 // This file will serve building the whole board container of the tasks 
 
 // ---------- Imports --------
-import KanbanColumn from "./KanbanColumn";
+import { DndContext } from "@dnd-kit/core"
+import KanbanColumn from "./KanbanColumn"
 
-const KanbanBoard = (grouped, onChangeStatus) => {
+const KanbanBoard = ({grouped, onDropTask} ) => {
+    // ------ Functions -------
+
+    // ----------- Function 1: To handle the dragging of tasks between the columns
+    const handleDragEnd = (event) =>{
+        const {active, over } = event
+
+        // If there is no droppable col return
+        if (!droppedToCol){
+            return
+        }
+
+        const taskId = String(active.id)
+        const nextStatus = String(over.id)
+
+        // Send the info to the function 
+        onDropTask(taskId, nextStatus)
+
+    }
+
     return(
         <>
-        <div className="row g-4">
-            <div className="col-12 col-lg-4">
-                <KanbanColumn
-                title="To Do"
-                statusKey="todo"
-                tasks={grouped.todo}
-                onChangeStatus={onChangeStatus}
-                />
-            </div>
+        <DndContext onDragEnd={handleDragEnd}>
+            <div className="row g-4">
+                <div className="col-12 col-lg-4">
+                    <KanbanColumn
+                    title="To Do"
+                    statusKey="todo"
+                    tasks={grouped.todo}
+                    />
+                </div>
 
-            <div className="col-12 col-lg-4">
-                <KanbanColumn
-                title="Doing"
-                statusKey="doing"
-                tasks={grouped.doing}
-                onChangeStatus={onChangeStatus}
-                />
-            </div>
+                <div className="col-12 col-lg-4">
+                    <KanbanColumn
+                    title="Doing"
+                    statusKey="doing"
+                    tasks={grouped.doing}
+                    />
+                </div>
 
-            <div className="col-12 col-lg-4">
-                <KanbanColumn
-                title="Done"
-                statusKey="done"
-                tasks={grouped.done}
-                onChangeStatus={onChangeStatus}
-                />
+                <div className="col-12 col-lg-4">
+                    <KanbanColumn
+                    title="Done"
+                    statusKey="done"
+                    tasks={grouped.done}
+                    />
+                </div>
             </div>
-        </div>
+        </DndContext>
         </>
     )
 }

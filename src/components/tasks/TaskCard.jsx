@@ -1,7 +1,10 @@
 // This file will serve the creation of a task card shown in the kanban board
 
-// ----------- Helpers ----------
+// ------------ Imports --------------
+import { useDraggable } from "@dnd-kit/core"
+import { CSS } from "@dnd-kit/utilities"
 
+// ----------- Helpers ----------
 // ------ Helper 1: Change the task bg color based on the task's status --------
 const getBgClass = (status) => {
   if (status === "todo") {
@@ -27,46 +30,46 @@ const formatDueDate = (dueDate) => {
   return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
 }
 
-const TaskCard = (task, index, onChangeStatus ) => {
-  const id = task._id || task.id
-  const status = (task.status || "todo").toLowerCase() 
+const TaskCard = ({task, index}) => {
+    const id = String(task._id || task.id)
+    const status = (task.status || "todo").toLowerCase()
+    
+    // Make the card draggable object
+    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({id})
 
-  return (
+    // Styling for the dragged card
+    const style = {
+        transform: CSS.Translate.toString(transform),
+        cursor: "grab",
+        opacity: isDragging ? 0.6 : 1,}
+
+    return (
     <>
-    <div className={`task-card ${getBgClass(status)}`}>
-      <div className="task-card-body">
-        <div className="d-flex align-items-start justify-content-between gap-2">
-          <div className="task-pill">
-            <i className="bi bi-person-circle fs-4"></i>
-            <div style={{ fontWeight: 800, lineHeight: 1.2 }}>
-              {task.title}
+    <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+        <div className={`task-card ${getBgClass(status)}`}>
+            <div className="task-card-body">
+                <div className="d-flex align-items-start justify-content-between gap-2">
+                    <div className="task-pill">
+                        <i className="bi bi-person-circle fs-4"></i>
+                        <div style={{ fontWeight: 800, lineHeight: 1.2 }}>
+                        {task.title}
+                        </div>
+                    </div>
+
+                    <div className="task-number">Task No. {index}</div>
+                </div>
+
+                <div className="d-flex align-items-center justify-content-between mt-3">
+                    <div className="task-date">
+                        <i className="bi bi-calendar-event"></i>
+                        {formatDueDate(task.dueDate)}
+                    </div>
+                    <span className="badge text-bg-dark text-uppercase">{status}</span>
+
+                </div>
             </div>
-          </div>
-
-          <div className="task-number">Task No. {index}</div>
-        </div>
-
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <div className="task-date">
-            <i className="bi bi-calendar-event"></i>
-            {formatDueDate(task.dueDate)}
-          </div>
-
-          {/* Small status buttons */}
-          <div className="btn-group btn-group-sm">
-            <button className="btn btn-outline-dark" onClick={() => onChangeStatus(id, "todo")}>
-              To Do
-            </button>
-            <button className="btn btn-outline-dark" onClick={() => onChangeStatus(id, "doing")}>
-              Doing
-            </button>
-            <button className="btn btn-outline-dark" onClick={() => onChangeStatus(id, "done")}>
-              Done
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>    
+        </div>  
+    </div>  
     </>
-  )
+    )
 }
