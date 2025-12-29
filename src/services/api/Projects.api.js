@@ -9,7 +9,7 @@ export const GetAllProjects = async () => {
   }
 }
 
-export const getProject = async () => {
+export const getProject = async (projectId) => {
   try {
     const res = await Client.get(`/project/${projectId}`)
     return res.data
@@ -18,28 +18,28 @@ export const getProject = async () => {
   }
 }
 
-export const updateProject = async () => {
+export const updateProject = async (projectId,data) => {
   try {
-    const res = await Client.put(`/project/${projectId}`)
-    res.data
+    const res = await Client.put(`/project/${projectId}`,data)
+    return res.data
   } catch (error) {
     throw error
   }
 }
 
-export const deleteProject = async () => {
+export const deleteProject = async (projectId) => {
   try {
     const res = await Client.delete(`/project/${projectId}`)
-    res.data
+    return res.data
   } catch (error) {
     throw error
   }
 }
 
-export const createProject = async () => {
+export const createProject = async (data) => {
   try {
-    const res = await Client.post("/project")
-    res.data
+    const res = await Client.post("/project",data)
+    return res.data
   } catch (error) {
     throw error
   }
