@@ -36,9 +36,9 @@ const Feed = ({ user }) => {
       {teams.length === 0 ? (
         <p>No teams available</p>
       ) : (
-        <div className="grid col-3">
+        <div >
           {teams.map((team) => (
-            <div className="card" key={team._id}>
+            <div key={team._id}>
               <h3>{team.name}</h3>
 
               <p>Members: {team.members ? team.members.length : 0}</p>

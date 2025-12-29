@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { CreateTeam } from "../../services/api/endpoints"
-import PATH from "../../routes/paths"
 
 const AddTeam = () => {
   const navigate = useNavigate()
 
   const [team, setTeam] = useState({
     name: "",
+    description: "",
     members: [],
   })
 
@@ -18,7 +18,7 @@ const AddTeam = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     await CreateTeam(team)
-    navigate(PATH.TEAMS)
+    navigate("/teams")
   }
 
   return (
@@ -28,6 +28,14 @@ const AddTeam = () => {
       <form onSubmit={handleSubmit}>
         <label>Team Name</label>
         <input name="name" value={team.name} onChange={handleChange} required />
+
+        <label>Description</label>
+        <input
+          name="description"
+          value={team.description}
+          onChange={handleChange}
+          required
+        />
 
         <button type="submit">Create Team</button>
       </form>
