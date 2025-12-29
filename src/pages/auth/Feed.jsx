@@ -32,7 +32,11 @@ const Feed = ({ user }) => {
     <div>
       <h1>Welcome {user.name}</h1>
       <h2>Teams Overview</h2>
-
+      {user.role === "Manager" && (
+        <button onClick={() => navigate("/teams/add")}>
+          Create New Team
+        </button>
+      )}
       {teams.length === 0 ? (
         <p>No teams available</p>
       ) : (
