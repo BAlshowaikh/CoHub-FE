@@ -1,12 +1,16 @@
 // ----------- Imports -----------
+// Notes: useMemo is a hook used for performance optimization. It memoizes (caches) the result of a 
+// calculation so that it isn't re-run on every render
 import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { tasksApi } from "../../services/api/tasks.api" // Imports all attached BE endpoints
 import { groupByStatus } from "../../utils/tasks.utils" // For kanban grouping
+import KanbanBoard from "../../components/tasks/KanbanBoard"
 
+import "../../assets/styles/kanban.css";
 
-export default function ProjectKanbanPage() {
+const ProjectKanbanPage = () => {
   const { projectId } = useParams() // to get the project's tasks
 
   const [tasks, setTasks] = useState([])
@@ -40,72 +44,45 @@ export default function ProjectKanbanPage() {
   const grouped = useMemo(() => groupByStatus(tasks), [tasks])
 
   // ------ Function 2: Update status ------
-  const onChangeStatus = async (taskId, nextStatus) => {
+  const onDropTask  = async (taskId, nextStatus) => {
+    // Find the dragged task
+    const currentTask = tasks.find(
+      task => String(task._id || task.id) === String(taskId)
+    )
+    // Safe exit if not found
+    if (!currentTask){
+      await loadProjectTasks()
+      return
+    }
+
+    const currentStatus = String(currentTask.status || "").toLowerCase()
+
+    // If dragged in the same column (the task status isn't changed)
+    if (currentStatus === nextStatus){
+      return
+    }
+
     try {
       setErr("");
       await tasksApi.updateTaskStatus(taskId, nextStatus)
-      // simplest approach: reload tasks after update
+      // reload tasks after update
       await loadProjectTasks()
     } catch (e) {
-      setErr(e?.response?.data?.message || e.message || "Failed to update status");
+      setErr(e?.response?.data?.message || e.message || "Failed to update status")
+      await loadProjectTasks()
     }
   }
 
-  if (loading) return <div className="p-4">Loading tasks...</div>;
-  if (err) return <div className="p-4 text-red-600">{err}</div>;
+  if (loading) return <div className="p-4">Loading tasks...</div>
+  if (err) return <div className="alert alert-danger m-4">{err}</div>
+
 
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Project Kanban</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <KanbanColumn title="To Do" tasks={grouped.todo} onChangeStatus={onChangeStatus} />
-        <KanbanColumn title="Doing" tasks={grouped.doing} onChangeStatus={onChangeStatus} />
-        <KanbanColumn title="Done" tasks={grouped.done} onChangeStatus={onChangeStatus} />
-      </div>
-    </div>
-  );
-}
-
-const KanbanColumn = ({ title, tasks, onChangeStatus }) => {
-  return (
-    <div className="bg-white rounded-lg border p-3">
-      <h3 className="font-semibold mb-3">{title}</h3>
-
-      {tasks.length === 0 ? (
-        <p className="text-sm text-gray-500">No tasks</p>
-      ) : (
-        <div className="space-y-2">
-          {tasks.map((t) => (
-            <TaskCard key={t._id || t.id} task={t} onChangeStatus={onChangeStatus} />
-          ))}
-        </div>
-      )}
+      <KanbanBoard grouped={grouped} onDropTask={onDropTask} />
     </div>
   )
 }
 
-const TaskCard = ({ task, onChangeStatus }) => {
-  const id = task._id || task.id
-
-  return (
-    <>
-        <div className="rounded-md border p-3">
-        <div className="font-medium">{task.title}</div>
-        <div className="text-xs text-gray-500 mt-1">status: {task.status}</div>
-
-        <div className="flex flex-wrap gap-2 mt-3">
-            <button className="px-2 py-1 text-xs border rounded" onClick={() => onChangeStatus(id, "todo")}>
-            To Do
-            </button>
-            <button className="px-2 py-1 text-xs border rounded" onClick={() => onChangeStatus(id, "doing")}>
-            Doing
-            </button>
-            <button className="px-2 py-1 text-xs border rounded" onClick={() => onChangeStatus(id, "done")}>
-            Done
-            </button>
-        </div>
-        </div>
-    </>
-  )
-}
+export default ProjectKanbanPage
