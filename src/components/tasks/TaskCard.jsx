@@ -30,9 +30,10 @@ const formatDueDate = (dueDate) => {
   return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
 }
 
-const TaskCard = ({task, index}) => {
+const TaskCard = ({task, index, onViewDetails, onEdit}) => {
     const id = String(task._id || task.id)
     const status = (task.status || "todo").toLowerCase()
+    const canEditUi = status === "todo"
     
     // Make the card draggable object
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({id})
@@ -45,31 +46,61 @@ const TaskCard = ({task, index}) => {
 
     return (
     <>
-    <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        <div className={`task-card ${getBgClass(status)}`}>
-            <div className="task-card-body">
-                <div className="d-flex align-items-start justify-content-between gap-2">
-                    <div className="task-pill">
-                        <i className="bi bi-person-circle fs-4"></i>
-                        <div style={{ fontWeight: 800, lineHeight: 1.2 }}>
-                        {task.title}
-                        </div>
-                    </div>
+<div ref={setNodeRef} style={style}>
+      <div className={`task-card ${getBgClass(status)}`}>
+        <div className="task-card-body">
+          <div className="d-flex align-items-start justify-content-between gap-2">
+            <div className="task-pill d-flex align-items-center gap-2">
+              <span
+                {...listeners}
+                {...attributes}
+                style={{ cursor: "grab" }}
+                title="Drag"
+              >
+                <i className="bi bi-grip-vertical fs-4"></i>
+              </span>
 
-                    <div className="task-number">Task No. {index}</div>
-                </div>
-
-                <div className="d-flex align-items-center justify-content-between mt-3">
-                    <div className="task-date">
-                        <i className="bi bi-calendar-event"></i>
-                        {formatDueDate(task.dueDate)}
-                    </div>
-                    <span className="badge text-bg-dark text-uppercase">{status}</span>
-
-                </div>
+              <div style={{ fontWeight: 800, lineHeight: 1.2 }}>
+                {task.title}
+              </div>
             </div>
-        </div>  
-    </div>  
+
+            <div className="task-number">Task No. {index}</div>
+          </div>
+
+          <div className="d-flex align-items-center justify-content-between mt-3">
+            <div className="task-date">
+              <i className="bi bi-calendar-event"></i>
+              {formatDueDate(task.dueDate)}
+            </div>
+
+            <span className="badge text-bg-dark text-uppercase">{status}</span>
+          </div>
+
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-dark mt-3 w-100"
+            onClick={() => onViewDetails(task._id || task.id)}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            View details
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-sm btn-dark mt-2 w-100"
+            onClick={() => onEdit?.(task._id || task.id)}
+            disabled={status !== "todo"}
+            onPointerDown={(e) => e.stopPropagation()}
+            title={status !== "todo" ? "Only TODO tasks can be edited" : "Edit task"}
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+    </div>
     </>
     )
 }
+
+export default TaskCard

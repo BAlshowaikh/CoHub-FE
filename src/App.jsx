@@ -16,7 +16,7 @@ import TeamDetails from "./pages/teams/TeamDetails"
 import AddTeam from "./pages/teams/AddTeam"
 import EditTeam from "./pages/teams/EditTeam"
 // --------- Project Imports -----------
-// import ProjectKanbanPage from "./pages/tasks/ProjectKanbanPage"
+import ProjectKanbanPage from './pages/tasks/projectKanbanPage'
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -44,6 +44,7 @@ const App = () => {
       <main>
         <h1>Welcome to CoHub Website</h1>
         <Routes>
+
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
