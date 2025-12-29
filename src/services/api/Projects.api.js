@@ -1,0 +1,46 @@
+import Client from "./api"
+
+export const GetAllProjects = async () => {
+  try {
+    const res = await Client.get("/project")
+    return res.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const getProject = async () => {
+  try {
+    const res = await Client.get(`/project/${projectId}`)
+    return res.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const updateProject = async () => {
+  try {
+    const res = await Client.put(`/project/${projectId}`)
+    res.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const deleteProject = async () => {
+  try {
+    const res = await Client.delete(`/project/${projectId}`)
+    res.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const createProject = async () => {
+  try {
+    const res = await Client.post("/project")
+    res.data
+  } catch (error) {
+    throw error
+  }
+}
