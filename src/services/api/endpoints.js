@@ -12,6 +12,7 @@ export const GetTeamById = async (teamId) => {
   return res.data
 }
 
+
 export const CreateTeam = async (data) => {
   const res = await Client.post("/teams", data)
   return res.data
@@ -23,10 +24,12 @@ export const UpdateTeam = async (teamId, data) => {
   return res.data
 }
 
+
 export const DeleteTeam = async (teamId) => {
   const res = await Client.delete(`/teams/${teamId}`)
   return res.data
 }
+
 
 export const GetEditTeamData = async (teamId) => {
   const res = await Client.get(`/teams/${teamId}/edit`)

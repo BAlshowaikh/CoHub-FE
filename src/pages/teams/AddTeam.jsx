@@ -17,10 +17,9 @@ const AddTeam = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await CreateTeam(team)
-    navigate("/teams")
+    const created = await CreateTeam(team)
+  navigate(`/teams/${created._id}`)
   }
-
   return (
     <div>
       <h1>Create Team</h1>
@@ -30,12 +29,7 @@ const AddTeam = () => {
         <input name="name" value={team.name} onChange={handleChange} required />
 
         <label>Description</label>
-        <input
-          name="description"
-          value={team.description}
-          onChange={handleChange}
-          required
-        />
+        <input name="description" value={team.description} onChange={handleChange} required />
 
         <button type="submit">Create Team</button>
       </form>
