@@ -5,7 +5,7 @@ import './App.css'
 import { Routes, Route } from "react-router-dom"
 
 // --------- Project Imports -----------
-// import ProjectKanbanPage from "./pages/tasks/ProjectKanbanPage"
+import ProjectKanbanPage from './pages/tasks/projectKanbanPage'
 
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
       <main>
         <h1>Welcome to CoHub Website</h1>
         <Routes>
-          <Route path="/projects/:projectId" element={<ProjectKanbanPage />} />
+          <Route path="/projects/tasks/:projectId" element={<ProjectKanbanPage />} />
         </Routes>
       </main>
     </>

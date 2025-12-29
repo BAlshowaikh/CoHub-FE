@@ -5,7 +5,7 @@
 import { useDroppable } from "@dnd-kit/core"
 import TaskCard from "./TaskCard"
 
-const KanbanColumn = ({title, tasks, statusKey}) => {
+const KanbanColumn = ({title, tasks, statusKey, onViewDetails, onEditTask}) => {
 
     // Trun the column into a droppable area (Target Zone)
     const { setNodeRef, isOver } = useDroppable({
@@ -29,7 +29,8 @@ const KanbanColumn = ({title, tasks, statusKey}) => {
                         key={task._id || task.id}
                         task={task}
                         index={index + 1}
-                        onChangeStatus={onChangeStatus}
+                        onViewDetails={onViewDetails}
+                        onEdit={onEditTask}
                         />
                     ))
                     )}

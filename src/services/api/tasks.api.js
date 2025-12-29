@@ -1,5 +1,5 @@
 // Import the backend api
-import Client from "./api"
+import Client from "../api"
 
 export const tasksApi = {
     // When receive a /tasks?projectId URI
@@ -17,6 +17,12 @@ export const tasksApi = {
     // When a task card is being clicked
     async getTaskDetails(taskId) {
         const res = await Client.get(`/tasks/${taskId}`)
+        return res.data
+    },
+
+     // Create a task
+    async createTask(payload) {
+        const res = await Client.post("/tasks", payload)
         return res.data
     },
 

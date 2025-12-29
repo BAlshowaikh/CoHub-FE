@@ -6,9 +6,13 @@ import { useParams } from "react-router-dom"
 
 import { tasksApi } from "../../services/api/tasks.api" // Imports all attached BE endpoints
 import { groupByStatus } from "../../utils/tasks.utils" // For kanban grouping
-import KanbanBoard from "../../components/tasks/KanbanBoard"
+import { getStoredUser, isPMUser } from "../../utils/user.utils"
 
-import "../../assets/styles/kanban.css";
+import KanbanBoard from "../../components/tasks/KanbanBoard"
+import TaskDetailsModal from "../../components/tasks/TaskDetailsModal"
+import TaskFormModal from "../../components/tasks/TaskFormModal"
+
+import "../../assets/styles/kanban.css"
 
 const ProjectKanbanPage = () => {
   const { projectId } = useParams() // to get the project's tasks
@@ -16,6 +20,48 @@ const ProjectKanbanPage = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState("")
+
+  // Handle details modal
+  const [selectedTaskId, setSelectedTaskId] = useState(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const openDetails = (taskId) => {
+    setSelectedTaskId(taskId);
+    setDetailsOpen(true);
+  }
+
+  const closeDetails = () => {
+    setDetailsOpen(false);
+    setSelectedTaskId(null);
+  }
+
+  // Handle Create/Edit form modal
+  const [formOpen, setFormOpen] = useState(false)
+  const [formMode, setFormMode] = useState("create") // "create" by default
+
+  const user = getStoredUser()
+  const isPM = isPMUser(user)
+
+  const openCreateTask = () => {
+    if (!isPM) {
+      setErr("Only PM can add tasks")
+      return
+    }
+    setFormMode("create")
+    setSelectedTaskId(null)
+    setFormOpen(true)
+  }
+
+  const openEditTask = (taskId) => {
+    setFormMode("edit")
+    setSelectedTaskId(taskId)
+    setFormOpen(true)
+  }
+
+  const closeForm = () => {
+    setFormOpen(false)
+    setSelectedTaskId(null)
+  }
 
   // ---------- Function 1 : Fetch tasks for project -------------
   const loadProjectTasks = async () => {
@@ -79,8 +125,32 @@ const ProjectKanbanPage = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Project Kanban</h2>
-      <KanbanBoard grouped={grouped} onDropTask={onDropTask} />
+      <div className="mb-4">
+        <h2 className="text-2xl font-bold">Project Kanban</h2>
+      </div>
+      <div className="kanban-wrapper">
+        <KanbanBoard 
+          grouped={grouped} 
+          onDropTask={onDropTask} 
+          onViewDetails={openDetails} 
+          onEditTask={openEditTask} 
+        />
+      </div>
+
+      {/* Modals */}
+      <TaskDetailsModal 
+        show={detailsOpen} 
+        taskId={selectedTaskId} 
+        onClose={closeDetails} 
+      />
+      <TaskFormModal 
+        show={formOpen} 
+        mode={formMode} 
+        projectId={projectId} 
+        taskId={selectedTaskId} 
+        onClose={closeForm} 
+        onSaved={loadProjectTasks}
+      />
     </div>
   )
 }
