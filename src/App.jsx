@@ -5,17 +5,25 @@ import { Routes, Route, Navigate } from "react-router-dom"
 import { CheckSession } from "./services/Auth"
 import Nav from "./components/common/Navbar"
 
+// ------------- Auth pages -------------
 import Home from "./pages/auth/Home"
 import SignIn from "./pages/auth/SignIn"
 import Register from "./pages/auth/Register"
 import Feed from "./pages/auth/Feed"
 
+// ------------ Team pages -----------
 import TeamsList from "./pages/teams/TeamsList"
 import TeamDetails from "./pages/teams/TeamDetails"
 import AddTeam from "./pages/teams/AddTeam"
 import EditTeam from "./pages/teams/EditTeam"
 
+// ------------------ Project list page -------------
+import ProjectsList from "./pages/projects/ProjectsList"
+
+// -------------- Project's Tasks pages ----------- 
 import ProjectKanbanPage from "./pages/tasks/projectKanbanPage"
+
+
 
 const App = () => {
   const [user, setUser] = useState(null)
@@ -54,24 +62,28 @@ const App = () => {
     <>
       <Nav user={user} handleLogOut={handleLogOut} />
       <main>
-        <h1>Welcome to CoHub Website</h1>
-
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protect Feed */}
+          {/* Feed */}
           <Route
             path="/feed"
             element={user ? <Feed user={user} /> : <Navigate to="/signin" replace />}
           />
 
-          {/* Protect Teams pages */}
+          {/* Project pages */}
+          <Route path="/projects" 
+          element={user ? <ProjectsList user={user} /> : <Navigate to="/signin" replace />}
+          />
+
+          {/* Teams pages */}
           <Route
             path="/teams"
             element={user ? <TeamsList user={user} /> : <Navigate to="/signin" replace />}
           />
+
           <Route
             path="/teams/add"
             element={user ? <AddTeam user={user} /> : <Navigate to="/signin" replace />}
@@ -85,7 +97,7 @@ const App = () => {
             element={user ? <EditTeam user={user} /> : <Navigate to="/signin" replace />}
           />
 
-          {/* Protect Project Kanban */}
+          {/* Project's tasks page */}
           <Route
             path="/project/tasks/:projectId"
             element={user ? <ProjectKanbanPage user={user} /> : <Navigate to="/signin" replace />}

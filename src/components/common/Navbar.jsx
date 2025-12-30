@@ -1,6 +1,8 @@
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import "../../assets/styles/navbar.css"
 
+import logo from "../../assets/images/cohub-logo.png"
+
 const Nav = ({ user, handleLogOut }) => {
   const navigate = useNavigate()
   const role = (user?.role || "").toLowerCase()
@@ -16,7 +18,7 @@ const Nav = ({ user, handleLogOut }) => {
     <header className="cohub-nav">
       <div className="cohub-nav__inner">
         <Link to="/" className="cohub-nav__brand">
-          <img className="cohub-nav__logo" src="/images/logo.png" alt="CoHub" />
+          <img className="cohub-nav__logo" src={logo} alt="CoHub" />
           <span className="cohub-nav__title">CoHub</span>
         </Link>
 
