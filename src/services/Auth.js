@@ -14,6 +14,7 @@ export const SignInUser = async (data) => {
     const res = await Client.post('/auth/login', data)
 
     localStorage.setItem('token',res.data.token)
+    localStorage.setItem("user", JSON.stringify(res.data.user))
     return res.data.user
   } catch (error) {
     throw error
@@ -29,4 +30,10 @@ export const CheckSession = async () => {
     throw error
   }
 }
+
+export const Logout = () => {
+  localStorage.removeItem("token")
+  localStorage.removeItem("user")
+}
+
 

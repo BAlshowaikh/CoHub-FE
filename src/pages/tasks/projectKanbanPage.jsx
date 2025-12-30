@@ -53,6 +53,10 @@ const ProjectKanbanPage = () => {
   }
 
   const openEditTask = (taskId) => {
+    if (!isPM) {
+      setErr("PM only")
+      return
+    }
     setFormMode("edit")
     setSelectedTaskId(taskId)
     setFormOpen(true)

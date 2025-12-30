@@ -3,6 +3,8 @@
 // ------------ Imports --------------
 import { useDraggable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
+import { getStoredUser, isPMUser } from "../../utils/user.utils"
+
 
 // ----------- Helpers ----------
 // ------ Helper 1: Change the task bg color based on the task's status --------
@@ -34,7 +36,13 @@ const TaskCard = ({task, index, onViewDetails, onEdit}) => {
     const id = String(task._id || task.id)
     const status = (task.status || "todo").toLowerCase()
     const canEditUi = status === "todo"
-    
+    const assigneeName = task.assignedTo?.username || "Unassigned"
+    const user = getStoredUser()
+    const isPM = isPMUser(user)
+
+    const canShowEdit = isPM && status === "todo"
+
+
     // Make the card draggable object
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({id})
 
@@ -73,7 +81,9 @@ const TaskCard = ({task, index, onViewDetails, onEdit}) => {
               <i className="bi bi-calendar-event"></i>
               {formatDueDate(task.dueDate)}
             </div>
-
+            <div className="text-muted fw-semibold" style={{ fontSize: 12 }}>
+              Assignee: {assigneeName}
+            </div>
             <span className="badge text-bg-dark text-uppercase">{status}</span>
           </div>
 
@@ -86,16 +96,17 @@ const TaskCard = ({task, index, onViewDetails, onEdit}) => {
             View details
           </button>
 
-          <button
-            type="button"
-            className="btn btn-sm btn-dark mt-2 w-100"
-            onClick={() => onEdit?.(task._id || task.id)}
-            disabled={status !== "todo"}
-            onPointerDown={(e) => e.stopPropagation()}
-            title={status !== "todo" ? "Only TODO tasks can be edited" : "Edit task"}
-          >
-            Edit
-          </button>
+          {canShowEdit ? (
+            <button
+              type="button"
+              className="btn btn-sm btn-dark mt-2 w-100"
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={() => onEdit?.(task._id || task.id)}
+            >
+              Edit
+            </button>
+          ) : null}
+
         </div>
       </div>
     </div>

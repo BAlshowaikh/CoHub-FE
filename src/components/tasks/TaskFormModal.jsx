@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { tasksApi } from "../../services/api/tasks.api"
 import { getStoredUser, isPMUser } from "../../utils/user.utils"
+import {getProjectAssignees} from "../../services/api/Projects.api"
 
 // ---------- Initial State ----------
 const initialState = {
@@ -22,6 +23,7 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
   const [err, setErr] = useState("")
   const [task, setTask] = useState(null)
   const [form, setForm] = useState(initialState)
+  const [assignees, setAssignees] = useState([])
 
   // ---------- Helpers ----------
   const toDateInputValue = (date) => {
@@ -41,13 +43,21 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
   // ---------- Load task for edit mode ----------
   useEffect(() => {
     const load = async () => {
-      if (!show) return
+      if (!show) {return}
 
       setErr("")
+
+      // Load the assigned project's memebrs usernames
+      const loadAssignees = async () => {
+        const res = await getProjectAssignees(projectId)
+        setAssignees(res.data || [])
+      }
 
       if (mode === "create") {
         setTask(null)
         setForm(initialState)
+        // Load the members
+        await loadAssignees()
         return
       }
 
@@ -57,6 +67,7 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
           const res = await tasksApi.getTaskDetails(taskId)
           const t = res?.data || null
           setTask(t)
+          await loadAssignees()
 
           setForm({
             title: t?.title || "",
@@ -246,15 +257,26 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
                 <div className="row mb-4">
                   <div className="col-4 col-md-3 text-muted fw-semibold">Assigned To</div>
                   <div className="col">
-                    <input
-                      className="form-control"
+                    <select
+                      className="form-select"
                       value={form.assignedTo}
                       onChange={(e) => onChange("assignedTo", e.target.value)}
                       disabled={isDisabled}
-                      placeholder="UserId (temporary)"
-                    />
+                    >
+                      <option value="">Unassigned</option>
+                      {assignees.map((u) => (
+                        <option key={u._id} value={u._id}>
+                          {u.username}
+                        </option>
+                      ))}
+                    </select>
                     <div className="form-text">
-                      For now enter a userId. Later we can replace this with a dropdown.
+                      Current assignee:{" "}
+                      <b>
+                        {typeof task?.assignedTo === "string"
+                          ? task.assignedTo
+                          : task?.assignedTo?.username || "Unassigned"}
+                      </b>
                     </div>
                   </div>
                 </div>
