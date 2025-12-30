@@ -138,6 +138,7 @@ const ProjectKanbanPage = () => {
           onDropTask={onDropTask} 
           onViewDetails={openDetails} 
           onEditTask={openEditTask} 
+          isPM={isPM}
         />
       </div>
 

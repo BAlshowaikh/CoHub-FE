@@ -87,7 +87,7 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
     }
 
     load()
-  }, [show, mode, taskId])
+  }, [show, mode, taskId, projectId])
 
   // ---------- Constraints: can edit only if PM + status todo ----------
   const canEdit = useMemo(() => {

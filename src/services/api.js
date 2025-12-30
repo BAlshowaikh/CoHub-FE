@@ -11,6 +11,8 @@ Client.interceptors.request.use(
 
     if (token) {
       config.headers['authorization'] = `Bearer ${token}`
+      JSON.parse(localStorage.getItem("user") || "null")?.token ||
+      JSON.parse(localStorage.getItem("user") || "null")?.accessToken
     }
 
     return config

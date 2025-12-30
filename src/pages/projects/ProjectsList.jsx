@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { GetAllProjects } from "../../services/api/Projects.api"
 import ProjectCard from "../../components/projects/ProjectCard"
 import ProjectsGridSection from "../../components/projects/ProjectsGridSection"
+import ProjectFormModal from "../../components/projects/ProjectFormModal"
+
 import "../../assets/styles/projects.css"
 
 const ProjectsList = ({ user }) => {
@@ -11,6 +13,8 @@ const ProjectsList = ({ user }) => {
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState("")
+  const [showCreate, setShowCreate] = useState(false)
+
 
   const isPM = (user?.role || "").toLowerCase() === "pm"
 
@@ -59,10 +63,7 @@ const ProjectsList = ({ user }) => {
 
         {/* PM only */}
         {isPM ? (
-          <button
-            className="btn btn-outline-dark"
-            onClick={() => navigate("/projects/new")}
-          >
+          <button className="btn btn-outline-dark" onClick={() => setShowCreate(true)}>
             + Add Project
           </button>
         ) : null}
@@ -98,6 +99,7 @@ const ProjectsList = ({ user }) => {
           </div>
         )}
       </ProjectsGridSection>
+      <ProjectFormModal show={showCreate} onClose={() => setShowCreate(false)} onSaved={loadProjects}/>
     </div>
   )
 }

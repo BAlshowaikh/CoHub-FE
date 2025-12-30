@@ -32,7 +32,7 @@ const formatDueDate = (dueDate) => {
   return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
 }
 
-const TaskCard = ({task, index, onViewDetails, onEdit}) => {
+const TaskCard = ({task, index, onViewDetails, onEdit, canEdit}) => {
     const id = String(task._id || task.id)
     const status = (task.status || "todo").toLowerCase()
     const canEditUi = status === "todo"
@@ -96,16 +96,20 @@ const TaskCard = ({task, index, onViewDetails, onEdit}) => {
             View details
           </button>
 
-          {canShowEdit ? (
-            <button
-              type="button"
-              className="btn btn-sm btn-dark mt-2 w-100"
-              onPointerDown={(e) => e.stopPropagation()}
-              onClick={() => onEdit?.(task._id || task.id)}
-            >
-              Edit
-            </button>
-          ) : null}
+        {canEdit ? (
+        <button
+          type="button"
+          className="btn btn-sm btn-outline-dark mt-3 w-100"
+          onPointerDown={(e) => e.stopPropagation()} 
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            onEdit?.(task._id || task.id)  
+          }}
+        >
+          Edit
+        </button>
+        ) : null}
 
         </div>
       </div>

@@ -15,13 +15,25 @@ const SignIn = ({setUser}) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value })
   }
 
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault()
+
   const userData = await SignInUser(formValues)
+
+  // ✅ store token (adjust key name based on your backend response)
+  const token = userData?.token || userData?.accessToken
+  if (token) localStorage.setItem("token", token)
+
+  // ✅ store the user object (keep it consistent with getStoredUser())
+  const userToStore = userData?.user || userData
+  localStorage.setItem("user", JSON.stringify(userToStore))
+
   setFormValues(initialState)
-  setUser(userData)
-  navigate('/projects') // Once sign in redirect to project paeg
+  setUser(userToStore)
+
+  navigate("/projects")
 }
+
 
   return (
     <div className="auth-page">
