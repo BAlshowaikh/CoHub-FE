@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { CreateTeam } from "../../services/api/endpoints"
+import { CreateTeam } from "../../services/api/teams.api"
 
 const AddTeam = () => {
   const navigate = useNavigate()

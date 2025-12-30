@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { GetTeams } from "../../services/api/endpoints"
+import { GetTeams } from "../../services/api/teams.api"
 
 
 const TeamsList = ({ user }) => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { GetEditTeamData, UpdateTeam } from "../../services/api/endpoints"
+import { GetEditTeamData, UpdateTeam } from "../../services/api/teams.api"
 
 const EditTeam = ({ user }) => {
   const { teamId } = useParams()

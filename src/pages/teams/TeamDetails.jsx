@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
-import { GetTeamById, DeleteTeam } from "../../services/api/endpoints"
+import { GetTeamById, DeleteTeam } from "../../services/api/teams.api"
 
 const TeamDetails = ({ user }) => {
   const { teamId } = useParams()
