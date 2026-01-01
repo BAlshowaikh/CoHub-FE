@@ -4,7 +4,7 @@
 import { DndContext } from "@dnd-kit/core"
 import KanbanColumn from "./KanbanColumn"
 
-const KanbanBoard = ({grouped, onDropTask, onViewDetails, onEditTask } ) => {
+const KanbanBoard = ({grouped, onDropTask, onViewDetails, onEditTask, isPM  } ) => {
     // ------ Functions -------
 
     // ----------- Function 1: To handle the dragging of tasks between the columns
@@ -35,6 +35,7 @@ const KanbanBoard = ({grouped, onDropTask, onViewDetails, onEditTask } ) => {
                     tasks={grouped.todo}
                     onViewDetails={onViewDetails}
                     onEditTask={onEditTask}
+                    isPM={isPM}
                     />
                 </div>
 
@@ -45,6 +46,7 @@ const KanbanBoard = ({grouped, onDropTask, onViewDetails, onEditTask } ) => {
                     tasks={grouped.doing}
                     onViewDetails={onViewDetails}
                     onEditTask={onEditTask}
+                    isPM={isPM}
                     />
                 </div>
 
@@ -55,6 +57,7 @@ const KanbanBoard = ({grouped, onDropTask, onViewDetails, onEditTask } ) => {
                     tasks={grouped.done}
                     onViewDetails={onViewDetails}
                     onEditTask={onEditTask}
+                    isPM={isPM}
                     />
                 </div>
             </div>

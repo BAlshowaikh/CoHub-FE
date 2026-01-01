@@ -1,4 +1,4 @@
-import Client from "./api"
+import Client from "../api"
 
 export const GetAllProjects = async () => {
   try {
@@ -39,6 +39,15 @@ export const deleteProject = async (projectId) => {
 export const createProject = async (data) => {
   try {
     const res = await Client.post("/project",data)
+    return res.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const getProjectAssignees = async (projectId) => {
+  try {
+    const res = await Client.get(`/project/${projectId}/assignees`)
     return res.data
   } catch (error) {
     throw error

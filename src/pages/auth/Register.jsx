@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import{RegisterUser} from '../../services/Auth'
 import { useNavigate } from 'react-router-dom'
+
+import "../../assets/styles/auth.css"
+
 const Register = () => {
   let navigate = useNavigate()
 
@@ -35,99 +38,121 @@ const handleSubmit = async (e) => {
 }
 
   return (
-    <div className="col register">
-      <img src="/images/register.png" alt="Register Title Image" />
-      <form onSubmit={handleSubmit}>
-              <div className="input-wrapper">
-          <label htmlFor="username">Username</label>
-          <input
-            name="username"
-            type="text"
-            placeholder="username"
-            onChange={handleChange}
-            value={formValues.username}
-            required
-          />
-        </div>
+    <div className="auth-page">
+      <div className="auth-card">
+        <h1 className="auth-title">Create Account</h1>
+        <p className="auth-subtitle">
+          Join CoHub and start managing your projects
+        </p>
 
-        <div className="input-wrapper">
-          <label htmlFor="fullname">Full Name</label>
-          <input
-            name="fullname"
-            type="text"
-            placeholder="full name"
-            onChange={handleChange}
-            value={formValues.fullname}
-            required
-          />
-        </div>
-         <div className="input-wrapper">
-          <label htmlFor="email">Email</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="example@example.com"
-            onChange={handleChange}
-            value={formValues.email}
-            required
-          />
-        </div>
-        <div className="input-wrapper">
-          <label htmlFor="confirmPassword">Confirm Password</label>
-          <input
-            name="confirmPassword"
-            type="password"
-            placeholder="confirm password"
-            onChange={handleChange}
-            value={formValues.confirmPassword}
-            required
-            autoComplete="off"
-          />
-        </div>
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div>
+            <label>Username</label>
+            <input
+              name="username"
+              type="text"
+              placeholder="username"
+              onChange={handleChange}
+              value={formValues.username}
+              required
+            />
+          </div>
 
-                <div className="input-wrapper">
-          <label htmlFor="password">Password</label>
-          <input
-            name="password"
-            type="password"
-            placeholder="password"
-            onChange={handleChange}
-            value={formValues.password}
-            required
-          />
+          <div>
+            <label>Full Name</label>
+            <input
+              name="fullname"
+              type="text"
+              placeholder="full name"
+              onChange={handleChange}
+              value={formValues.fullname}
+              required
+            />
+          </div>
+
+          <div>
+            <label>Email</label>
+            <input
+              name="email"
+              type="email"
+              placeholder="example@example.com"
+              onChange={handleChange}
+              value={formValues.email}
+              required
+            />
+          </div>
+
+          <div>
+            <label>Password</label>
+            <input
+              name="password"
+              type="password"
+              placeholder="password"
+              onChange={handleChange}
+              value={formValues.password}
+              required
+            />
+          </div>
+
+          <div>
+            <label>Confirm Password</label>
+            <input
+              name="confirmPassword"
+              type="password"
+              placeholder="confirm password"
+              onChange={handleChange}
+              value={formValues.confirmPassword}
+              required
+              autoComplete="off"
+            />
+          </div>
+
+          <div>
+            <label>User Role</label>
+            <select
+              name="user_role"
+              onChange={handleChange}
+              value={formValues.user_role}
+              required
+            >
+              <option value="">Select Role</option>
+              <option value="Manager">Manager</option>
+              <option value="PM">PM</option>
+              <option value="Employee">Employee</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Department</label>
+            <select
+              name="department"
+              onChange={handleChange}
+              value={formValues.department}
+              required
+            >
+              <option value="">Select Department</option>
+              <option value="IT">IT</option>
+              <option value="HR">HR</option>
+              <option value="Marketing">Marketing</option>
+            </select>
+          </div>
+
+          <button
+            disabled={
+              !formValues.email ||
+              !formValues.password ||
+              formValues.password !== formValues.confirmPassword
+            }
+          >
+            Register
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          Already have an account?{" "}
+          <span onClick={() => navigate("/signin")}>Login</span>
         </div>
-
-
-                <div className="input-wrapper">
-          <label>User Role</label>
-          <select name="user_role" onChange={handleChange} required>
-            <option value="">Select Role</option>
-            <option value="Manager">Manager</option>
-            <option value="PM">PM</option>
-            <option value="Employee">Employee</option>
-          </select>
-        </div>
-
-                <div className="input-wrapper">
-          <label>Department</label>
-          <select name="department" onChange={handleChange} required>
-            <option value="">Select Department</option>
-            <option value="IT">IT</option>
-            <option value="HR">HR</option>
-            <option value="Marketing">Marketing</option>
-          </select>
-        </div>
-
-        <button
-          disabled={
-            !formValues.email ||
-            !formValues.password ||
-            formValues.password !== formValues.confirmPassword
-          }
-        >
-          Register
-        </button>
-      </form>
+      </div>
     </div>
   )
 }
