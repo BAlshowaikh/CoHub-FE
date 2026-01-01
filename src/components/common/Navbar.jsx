@@ -50,7 +50,7 @@ const Nav = ({ user, handleLogOut }) => {
               </NavLink>
 
               {/* PM only sees Teams */}
-              {isPM ? (
+              {isPM || user.role === "Manager" ? (
                 <NavLink className="cohub-nav__link" to="/teams">
                   Teams
                 </NavLink>

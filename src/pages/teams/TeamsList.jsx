@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { GetTeams } from "../../services/api/teams.api"
-
+import "../../../src/assets/styles/teams.css"
 
 const TeamsList = ({ user }) => {
   const [teams, setTeams] = useState([])
@@ -15,7 +15,7 @@ const TeamsList = ({ user }) => {
   }, [])
 
   return (
-    <div>
+    <div className="teams-page">
       <h1>Teams</h1>
 
       <Link to={"/teams/add"}>
@@ -29,7 +29,7 @@ const TeamsList = ({ user }) => {
     <li key={team._id}>
       <Link to={`/teams/${team._id}`}>{team.name}</Link>
 
-      {user.role === "Manager" && (
+      {user.role === "Manager" || user.role === "PM" && (
         <>
           <Link to={`/teams/${team._id}/edit`}>
             <button>Edit</button>

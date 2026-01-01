@@ -24,7 +24,6 @@ import ProjectsList from "./pages/projects/ProjectsList"
 import ProjectKanbanPage from "./pages/tasks/projectKanbanPage"
 
 
-
 const App = () => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -35,17 +34,29 @@ const App = () => {
     localStorage.removeItem("user")
   }
 
+  // const checkToken = async () => {
+  //   try {
+  //     const userData = await CheckSession()
+  //     setUser(userData)
+  //     localStorage.setItem("user", JSON.stringify(userData))
+  //   } catch (e) {
+  //     handleLogOut()
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
   const checkToken = async () => {
-    try {
-      const userData = await CheckSession()
-      setUser(userData)
-      localStorage.setItem("user", JSON.stringify(userData))
-    } catch (e) {
-      handleLogOut()
-    } finally {
-      setLoading(false)
-    }
+  try {
+    const user = await CheckSession()
+    setUser(user)
+    // We don't re-save the token here because it's already in localStorage
+    localStorage.setItem("user", JSON.stringify(user)) 
+  } catch (e) {
+    handleLogOut()
+  } finally {
+    setLoading(false)
   }
+}
 
   useEffect(() => {
     const token = localStorage.getItem("token")

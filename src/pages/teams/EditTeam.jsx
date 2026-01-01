@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { GetEditTeamData, UpdateTeam } from "../../services/api/teams.api"
+import "../../../src/assets/styles/teams.css"
 
 const EditTeam = ({ user }) => {
   const { teamId } = useParams()
@@ -42,7 +43,7 @@ const EditTeam = ({ user }) => {
   if (!team) return <p>Loading...</p>
 
   return (
-    <div>
+    <div className="teams-page">
       <h1>Edit Team</h1>
 
       <form onSubmit={handleSubmit}>

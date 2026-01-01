@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { CreateTeam } from "../../services/api/teams.api"
+import "../../assets/styles/teams.css"
 
 const AddTeam = () => {
   const navigate = useNavigate()
@@ -21,7 +22,7 @@ const AddTeam = () => {
   navigate(`/teams/${created._id}`)
   }
   return (
-    <div>
+    <div className="teams-page">
       <h1>Create Team</h1>
 
       <form onSubmit={handleSubmit}>

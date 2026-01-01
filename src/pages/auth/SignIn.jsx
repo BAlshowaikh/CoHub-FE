@@ -15,25 +15,50 @@ const SignIn = ({setUser}) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value })
   }
 
+// const handleSubmit = async (e) => {
+//   e.preventDefault()
+
+//   const userData = await SignInUser(formValues)
+
+//   // ✅ store token (adjust key name based on your backend response)
+//   const token = userData?.token || userData?.accessToken
+//   if (token) localStorage.setItem("token", token)
+
+//   // ✅ store the user object (keep it consistent with getStoredUser())
+//   const userToStore = userData?.user || userData
+//   localStorage.setItem("user", JSON.stringify(userToStore))
+
+//   setFormValues(initialState)
+//   setUser(userToStore)
+
+//   navigate("/projects")
+// }
 const handleSubmit = async (e) => {
   e.preventDefault()
+  try {
+    const res = await SignInUser(formValues) // res is now { user: {...}, token: "..." }
 
-  const userData = await SignInUser(formValues)
+    // 1. Store the token (Backend sends 'token')
+    const token = res.token
+    if (token) {
+      localStorage.setItem("token", token)
+    }
 
-  // ✅ store token (adjust key name based on your backend response)
-  const token = userData?.token || userData?.accessToken
-  if (token) localStorage.setItem("token", token)
+    // 2. Store and Set the user (Backend sends 'user')
+    const user = res.user
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user))
+      setUser(user)
+      navigate("/projects")
+    } else {
+      console.error("User object missing from response")
+    }
 
-  // ✅ store the user object (keep it consistent with getStoredUser())
-  const userToStore = userData?.user || userData
-  localStorage.setItem("user", JSON.stringify(userToStore))
-
-  setFormValues(initialState)
-  setUser(userToStore)
-
-  navigate("/projects")
+    setFormValues(initialState)
+  } catch (error) {
+    console.error("Login failed", error)
+  }
 }
-
 
   return (
     <div className="auth-page">
