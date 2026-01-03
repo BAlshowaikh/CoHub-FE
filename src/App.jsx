@@ -34,17 +34,6 @@ const App = () => {
     localStorage.removeItem("user")
   }
 
-  // const checkToken = async () => {
-  //   try {
-  //     const userData = await CheckSession()
-  //     setUser(userData)
-  //     localStorage.setItem("user", JSON.stringify(userData))
-  //   } catch (e) {
-  //     handleLogOut()
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
   const checkToken = async () => {
   try {
     const user = await CheckSession()

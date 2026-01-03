@@ -32,16 +32,12 @@ const formatDueDate = (dueDate) => {
   return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
 }
 
-const TaskCard = ({task, index, onViewDetails, onEdit, canEdit}) => {
+const TaskCard = ({task, index, onViewDetails, onEdit, onDelete, canEditAndDelete}) => {
     const id = String(task._id || task.id)
     const status = (task.status || "todo").toLowerCase()
-    const canEditUi = status === "todo"
     const assigneeName = task.assignedTo?.username || "Unassigned"
     const user = getStoredUser()
     const isPM = isPMUser(user)
-
-    const canShowEdit = isPM && status === "todo"
-
 
     // Make the card draggable object
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({id})
@@ -54,7 +50,7 @@ const TaskCard = ({task, index, onViewDetails, onEdit, canEdit}) => {
 
     return (
     <>
-<div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef} style={style}>
       <div className={`task-card ${getBgClass(status)}`}>
         <div className="task-card-body">
           <div className="d-flex align-items-start justify-content-between gap-2">
@@ -95,21 +91,38 @@ const TaskCard = ({task, index, onViewDetails, onEdit, canEdit}) => {
           >
             View details
           </button>
-
-        {canEdit ? (
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-dark mt-3 w-100"
-          onPointerDown={(e) => e.stopPropagation()} 
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onEdit?.(task._id || task.id)  
-          }}
-        >
-          Edit
-        </button>
-        ) : null}
+          {
+            // Action items (edit and delete)
+          }
+          {canEditAndDelete && (
+            <div className="d-flex gap-2 mt-2">
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-dark w-50"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  onEdit?.(task._id || task.id)
+                }}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-danger w-50"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  // Call the delete function
+                  onDelete?.(task._id || task.id)
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          )}
 
         </div>
       </div>
