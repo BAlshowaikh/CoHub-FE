@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom"
 import { GetTeamById, DeleteTeam } from "../../services/api/teams.api"
 import "../../../src/assets/styles/teams.css"
 
+
 const TeamDetails = ({ user }) => {
   const { teamId } = useParams()
   const navigate = useNavigate()

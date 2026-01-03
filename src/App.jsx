@@ -20,7 +20,7 @@ import EditTeam from "./pages/teams/EditTeam"
 // ------------------ Project list page -------------
 import ProjectsList from "./pages/projects/ProjectsList"
 
-// -------------- Project's Tasks pages ----------- 
+// -------------- Project's Tasks pages -----------
 import ProjectKanbanPage from "./pages/tasks/projectKanbanPage"
 
 
@@ -50,7 +50,7 @@ const App = () => {
     const user = await CheckSession()
     setUser(user)
     // We don't re-save the token here because it's already in localStorage
-    localStorage.setItem("user", JSON.stringify(user)) 
+    localStorage.setItem("user", JSON.stringify(user))
   } catch (e) {
     handleLogOut()
   } finally {
@@ -85,7 +85,7 @@ const App = () => {
           />
 
           {/* Project pages */}
-          <Route path="/projects" 
+          <Route path="/projects"
           element={user ? <ProjectsList user={user} /> : <Navigate to="/signin" replace />}
           />
 
