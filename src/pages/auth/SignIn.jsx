@@ -17,7 +17,7 @@ const SignIn = ({setUser}) => {
   const userData = await SignInUser(formValues)
   setFormValues(initialState)
   setUser(userData)
-  navigate('/feed')
+  navigate('/project')
 }
 
   return (
