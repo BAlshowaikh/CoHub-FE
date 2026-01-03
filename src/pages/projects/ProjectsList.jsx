@@ -7,4 +7,4 @@ const ProjectsList = () => {
   );
 };
 
-export default ProjectsList;y
+export default ProjectsList;
