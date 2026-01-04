@@ -387,4 +387,4 @@ const LandingPage = () => {
   );
 }
 
-module.exports = LandingPage
+export default LandingPage
