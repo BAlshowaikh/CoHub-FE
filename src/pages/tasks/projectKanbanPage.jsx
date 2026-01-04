@@ -1,9 +1,9 @@
 // ----------- Imports -----------
 import { useEffect, useMemo, useState } from "react"
-import { useParams, Link } from "react-router-dom" // Added Link for navigation
+import { useParams, Link } from "react-router-dom"
 
 import { tasksApi } from "../../services/api/tasks.api" 
-import { getProject } from "../../services/api/projects.api" // Ensure this matches your export name
+import { getProject } from "../../services/api/projects.api" 
 import { groupByStatus } from "../../utils/tasks.utils" 
 import { getStoredUser, isPMUser } from "../../utils/user.utils"
 
