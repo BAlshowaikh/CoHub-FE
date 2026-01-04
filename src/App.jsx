@@ -11,6 +11,11 @@ import SignIn from "./pages/auth/SignIn"
 import Register from "./pages/auth/Register"
 import Feed from "./pages/auth/Feed"
 
+
+import ProjectList from "./pages/projects/ProjectsList"
+import NewProject from "./pages/projects/ProjectNew"
+import ProjectDetails from "./pages/projects/ProjectDetails"
+
 // ------------ Team pages -----------
 import TeamsList from "./pages/teams/TeamsList"
 import TeamDetails from "./pages/teams/TeamDetails"
@@ -34,17 +39,7 @@ const App = () => {
     localStorage.removeItem("user")
   }
 
-  // const checkToken = async () => {
-  //   try {
-  //     const userData = await CheckSession()
-  //     setUser(userData)
-  //     localStorage.setItem("user", JSON.stringify(userData))
-  //   } catch (e) {
-  //     handleLogOut()
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
+
   const checkToken = async () => {
   try {
     const user = await CheckSession()
@@ -69,6 +64,7 @@ const App = () => {
 
   if (loading) return <div className="p-4">Loading...</div>
 
+
   return (
     <>
       <Nav user={user} handleLogOut={handleLogOut} />
@@ -84,10 +80,12 @@ const App = () => {
             element={user ? <Feed user={user} /> : <Navigate to="/signin" replace />}
           />
 
-          {/* Project pages */}
-          <Route path="/projects"
-          element={user ? <ProjectsList user={user} /> : <Navigate to="/signin" replace />}
-          />
+
+          <Route path="/project" element={<ProjectList />} />
+          <Route path="/project/add" element={<NewProject />} />
+          <Route path="/project/:projectId" element={<ProjectDetails />} />
+          <Route path="/teams" element={<TeamsList user={user} />} />
+          <Route path="/teams/add" element={<AddTeam />} />
 
           {/* Teams pages */}
           <Route
