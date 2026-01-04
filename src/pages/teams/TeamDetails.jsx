@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
-import { GetTeamById, DeleteTeam } from "../../services/api/endpoints"
+import { GetTeamById, DeleteTeam } from "../../services/api/teams.api"
+import "../../../src/assets/styles/teams.css"
+import TeamMembers from "../../components/teams/TeamMembers"
+import TeamRole from "../../components/teams/TeamRole"
 
 const TeamDetails = ({ user }) => {
   const { teamId } = useParams()
@@ -24,39 +27,18 @@ const TeamDetails = ({ user }) => {
   if (!team) return <p>Loading...</p>
 
   return (
-    <div>
+    <div className="teams-page">
       <h1>Team Details</h1>
 
       <h2>{team.name}</h2>
 
-      <h3>Members</h3>
-
-      {team.members && team.members.length > 0 ? (
-        <ul>
-          {team.members.map((mem) => (
-            <li key={mem._id}>
-              {mem.fullname} — {mem.email} — {mem.user_role} — {mem.department}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No members assigned.</p>
-      )}
+      <TeamMembers team={team} />
+<TeamRole user={user} team={team} handleDelete={handleDelete} />
 
 
-      {user.role === "Manager" && (
-        <>
-          <Link to={`/teams/${team._id}/edit`}>
-            <button>Edit Team</button>
-          </Link>
-
-          <button onClick={handleDelete} style={{ color: "red" }}>
-            Delete Team
-          </button>
-        </>
-      )}
     </div>
   )
 }
 
 export default TeamDetails
+

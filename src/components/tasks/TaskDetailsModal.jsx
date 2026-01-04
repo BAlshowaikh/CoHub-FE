@@ -51,15 +51,6 @@ const TaskDetailsModal = ({ show, taskId, onClose }) => {
           <div className="modal-content rounded-4" style={{ border: "2px solid rgba(0,0,0,0.35)" }}>
             {/* Header row with edit icon (left) and close (right) */}
             <div className="d-flex align-items-center justify-content-between px-3 pt-3">
-              <button
-                type="button"
-                className="btn btn-link text-dark p-0"
-                title="Edit (PM only later)"
-                onClick={() => {}}
-              >
-                <i className="bi bi-pencil fs-4"></i>
-              </button>
-
               <button type="button" className="btn btn-link text-dark p-0" onClick={onClose} title="Close">
                 <i className="bi bi-x-lg fs-4"></i>
               </button>

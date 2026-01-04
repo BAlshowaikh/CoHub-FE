@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { GetTeams } from "../../services/api/endpoints"
-
-
+import { GetTeams } from "../../services/api/teams.api"
+import "../../../src/assets/styles/teams.css"
+import TeamRole from "../../components/teams/TeamEditList"
+import TeamEditList from "../../components/teams/TeamEditList"
 const TeamsList = ({ user }) => {
   const [teams, setTeams] = useState([])
 
@@ -15,7 +16,7 @@ const TeamsList = ({ user }) => {
   }, [])
 
   return (
-    <div>
+    <div className="teams-page">
       <h1>Teams</h1>
 
       <Link to={"/teams/add"}>
@@ -26,21 +27,12 @@ const TeamsList = ({ user }) => {
 
 <ul>
   {teams.map((team) => (
-    <li key={team._id}>
-      <Link to={`/teams/${team._id}`}>{team.name}</Link>
-
-      {user.role === "Manager" && (
-        <>
-          <Link to={`/teams/${team._id}/edit`}>
-            <button>Edit</button>
-          </Link>
-        </>
-      )}
-    </li>
+    <TeamEditList key={team._id} team={team} user={user}
+        />
   ))}
-</ul>
-    </div>
-  )
-}
+    </ul>
+  </div>
+)}
 
 export default TeamsList
+

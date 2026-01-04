@@ -1,0 +1,138 @@
+
+.teams-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.teams-page h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.teams-page h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.teams-page h3 {
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+
+.teams-page button {
+  background-color: #2563eb; /* same primary as tasks */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.teams-page button:hover {
+  background-color: #1e40af;
+}
+
+.teams-page button + button {
+  margin-left: 10px;
+}
+
+.teams-page button[style*="red"] {
+  background-color: #dc2626;
+}
+
+.teams-page button[style*="red"]:hover {
+  background-color: #991b1b;
+}
+
+/* ===== Links ===== */
+.teams-page a {
+  text-decoration: none;
+}
+
+
+.team-card,
+.teams-page ul li {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+
+.teams-page ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.teams-page ul li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.teams-page ul li a {
+  font-weight: 500;
+  color: #111827;
+}
+
+.teams-page ul li a:hover {
+  text-decoration: underline;
+}
+
+
+.teams-page form {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.teams-page label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+
+.teams-page input,
+.teams-page select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+.teams-page input:focus,
+.teams-page select:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+
+.team-members ul {
+  list-style: none;
+  padding: 0;
+}
+
+.team-members li {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+
+.teams-page p {
+  color: #6b7280;
+}

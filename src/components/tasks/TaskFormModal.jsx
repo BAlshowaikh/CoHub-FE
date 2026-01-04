@@ -1,9 +1,8 @@
-// This modal will handle both states (add and edit for a task)
-
 // ---------- Imports -------------
 import { useEffect, useMemo, useState } from "react"
 import { tasksApi } from "../../services/api/tasks.api"
 import { getStoredUser, isPMUser } from "../../utils/user.utils"
+import { getProjectAssignees } from "../../services/api/Projects.api"
 
 // ---------- Initial State ----------
 const initialState = {
@@ -22,6 +21,7 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
   const [err, setErr] = useState("")
   const [task, setTask] = useState(null)
   const [form, setForm] = useState(initialState)
+  const [assignees, setAssignees] = useState([])
 
   // ---------- Helpers ----------
   const toDateInputValue = (date) => {
@@ -44,41 +44,52 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
       if (!show) return
 
       setErr("")
+      setLoading(true)
 
-      if (mode === "create") {
-        setTask(null)
-        setForm(initialState)
-        return
-      }
+      try {
+        // 1. Load the members FIRST.
+        const resMembers = await getProjectAssignees(projectId)
+        const membersList = resMembers.data || []
+        setAssignees(membersList)
 
-      if (mode === "edit" && taskId) {
-        try {
-          setLoading(true)
-          const res = await tasksApi.getTaskDetails(taskId)
-          const t = res?.data || null
+        if (mode === "create") {
+          setTask(null)
+          setForm(initialState)
+        } else if (mode === "edit" && taskId) {
+          // 2. Load Task details AFTER assignees are in state
+          const resTask = await tasksApi.getTaskDetails(taskId)
+          const t = resTask?.data || null
           setTask(t)
+
+          // 3. Extract the ID. Ensure it's a string to match the <option value={u._id}>
+          let currentAssigneeId = ""
+          if (t?.assignedTo) {
+            // Check if it's an object { _id: "..." } or just the string ID
+            currentAssigneeId = typeof t.assignedTo === "object" ? (t.assignedTo._id || t.assignedTo.id) : t.assignedTo
+          }
 
           setForm({
             title: t?.title || "",
             description: t?.description || "",
             dueDate: toDateInputValue(t?.dueDate),
-            assignedTo:
-              typeof t?.assignedTo === "string"
-                ? t.assignedTo
-                : t?.assignedTo?._id || "",
+            assignedTo: String(currentAssigneeId || ""), // Force to string
           })
-        } catch (e) {
-          setErr(e?.response?.data?.message || e.message || "Failed to load task")
-        } finally {
-          setLoading(false)
         }
+      } catch (e) {
+        // Only show error if it's NOT just the team warning (since you said members show up)
+        const message = e?.response?.data?.message || e.message
+        if (!message.includes("team assigned")) {
+           setErr(message)
+        }
+      } finally {
+        setLoading(false)
       }
     }
 
     load()
-  }, [show, mode, taskId])
+  }, [show, mode, taskId, projectId])
 
-  // ---------- Constraints: can edit only if PM + status todo ----------
+  // ---------- Constraints ----------
   const canEdit = useMemo(() => {
     if (mode !== "edit") return true
     if (!isPM) return false
@@ -100,47 +111,26 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
     e.preventDefault()
     setErr("")
 
-    // Allow only PM to create and edit  a task 
-    if (mode === "create" && !isPM) {
-      setErr("Only PM can create tasks")
-      return
-    }
-    if (mode === "edit" && !canEdit) {
-      setErr("Only PM can edit, and only when status is TODO")
-      return
-    }
-
-    const cleanTitle = form.title.trim()
-    if (cleanTitle.length < 2) {
-      setErr("Title must be at least 2 characters")
-      return
-    }
-
     try {
-        setLoading(true)
-        if (mode === "create") {
-            await tasksApi.createTask({
-                title: cleanTitle,
-                description: form.description.trim(),
-                dueDate: form.dueDate || null,
-                assignedTo: form.assignedTo || null,
-                projectId,
-            })
-        }
-        if (mode === "edit") {
-            await tasksApi.updateTask(taskId, {
-                title: cleanTitle,
-                description: form.description.trim(),
-                dueDate: form.dueDate || null,
-                assignedTo: form.assignedTo || null,
-            })
-        }
+      setLoading(true)
+      const payload = {
+        title: form.title.trim(),
+        description: form.description.trim(),
+        dueDate: form.dueDate || null,
+        assignedTo: form.assignedTo || null,
+        projectId,
+      }
+
+      if (mode === "create") {
+        await tasksApi.createTask(payload)
+      } else {
+        await tasksApi.updateTask(taskId, payload)
+      }
 
       if (onSaved) await onSaved()
       onClose()
     } catch (e2) {
       setErr(e2?.response?.data?.message || e2.message || "Failed to save task")
-      if (onSaved) await onSaved()
     } finally {
       setLoading(false)
     }
@@ -152,52 +142,23 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
     <>
       <div className="modal-backdrop fade show"></div>
 
-      <div
-        className="modal fade show"
-        style={{ display: "block" }}
-        role="dialog"
-        aria-modal="true"
-      >
+      <div className="modal fade show" style={{ display: "block" }} role="dialog" aria-modal="true">
         <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 760 }}>
-          <div
-            className="modal-content rounded-4"
-            style={{ border: "2px solid rgba(0,0,0,0.35)" }}
-          >
+          <div className="modal-content rounded-4" style={{ border: "2px solid rgba(0,0,0,0.35)" }}>
+            
             {/* Header */}
             <div className="d-flex align-items-center justify-content-between px-3 pt-3">
               <div className="fw-bold fs-4">{modalTitle}</div>
-
-              <button
-                type="button"
-                className="btn btn-link text-dark p-0"
-                onClick={onClose}
-                title="Close"
-              >
+              <button type="button" className="btn btn-link text-dark p-0" onClick={onClose}>
                 <i className="bi bi-x-lg fs-4"></i>
               </button>
             </div>
 
             <hr className="my-2" />
 
-            {/* Body */}
             <div className="modal-body px-4 pb-4">
-              {/* Errors */}
-              {err ? <div className="alert alert-danger">{err}</div> : null}
+              {err && <div className="alert alert-danger">{err}</div>}
 
-              {/* Mode constraints message */}
-              {mode === "create" && !isPM ? (
-                <div className="alert alert-warning">
-                  Only PM can create tasks
-                </div>
-              ) : null}
-
-              {mode === "edit" && !canEdit ? (
-                <div className="alert alert-warning">
-                  Only PM can edit and only when the task status is TODO
-                </div>
-              ) : null}
-
-              {/* Form */}
               <form onSubmit={onSubmit}>
                 {/* Title */}
                 <div className="row mb-4">
@@ -208,7 +169,6 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
                       value={form.title}
                       onChange={(e) => onChange("title", e.target.value)}
                       disabled={isDisabled}
-                      placeholder="Enter task title"
                     />
                   </div>
                 </div>
@@ -223,7 +183,6 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
                       value={form.description}
                       onChange={(e) => onChange("description", e.target.value)}
                       disabled={isDisabled}
-                      placeholder="Enter task description"
                     />
                   </div>
                 </div>
@@ -242,49 +201,43 @@ const TaskFormModal = ({ show, mode, projectId, taskId, onClose, onSaved }) => {
                   </div>
                 </div>
 
-                {/* Assigned To */}
+                {/* Assigned To Dropdown */}
                 <div className="row mb-4">
                   <div className="col-4 col-md-3 text-muted fw-semibold">Assigned To</div>
                   <div className="col">
-                    <input
-                      className="form-control"
+                    <select
+                      className="form-select"
                       value={form.assignedTo}
                       onChange={(e) => onChange("assignedTo", e.target.value)}
                       disabled={isDisabled}
-                      placeholder="UserId (temporary)"
-                    />
+                    >
+                      <option value="">Unassigned</option>
+                      {assignees.map((u) => (
+                        <option key={u._id} value={u._id}>
+                          {u.username}
+                        </option>
+                      ))}
+                    </select>
                     <div className="form-text">
-                      For now enter a userId. Later we can replace this with a dropdown.
+                      Current assignee: <b>{task?.assignedTo?.username || task?.assignedTo || "Unassigned"}</b>
                     </div>
                   </div>
                 </div>
 
-                {/* Footer buttons */}
                 <div className="d-flex justify-content-end gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-outline-dark"
-                    onClick={onClose}
-                    disabled={loading}
-                  >
+                  <button type="button" className="btn btn-outline-dark" onClick={onClose} disabled={loading}>
                     Cancel
                   </button>
-
-                  <button
-                    type="submit"
-                    className="btn btn-dark"
-                    disabled={isDisabled}
-                  >
+                  <button type="submit" className="btn btn-dark" disabled={isDisabled}>
                     {loading ? "Saving..." : mode === "create" ? "Create Task" : "Save Changes"}
                   </button>
                 </div>
 
-                {/* Show current status in edit mode */}
-                {mode === "edit" ? (
+                {mode === "edit" && (
                   <div className="mt-3 text-muted">
                     Current status: <b className="text-uppercase">{task?.status || "—"}</b>
                   </div>
-                ) : null}
+                )}
               </form>
             </div>
           </div>
