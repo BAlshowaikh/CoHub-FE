@@ -26,13 +26,30 @@ It enables users to organize work into projects, assign tasks, track progress th
 
 ---
 
-## 🌐 Deployed Application
+## Deployed Application
 
-🔗 **Live App:** *(To be added)*
+**Live App:** *(To be added)*
+
+---
+## Screenshots
+![Landing Page](public/home.png)
+Figure 1. Landing Page
+
+![Signup page](public/signup.png)
+Figure 2. Signup Page
+
+![Projects List](public/project-list.png)
+Figure 3. Projects List Page
+
+![Tasks List](public/tasks-list.png)
+Figure 4. Tasks List Page
+
+![Teams List](public/teams-list.png)
+Figure 5. Teams List Page
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 CoHub was built to address common challenges in project coordination by providing:
 
@@ -46,7 +63,7 @@ The system follows a separation of concerns between frontend and backend, ensuri
 
 ---
 
-## 🧩 Core Features
+## Core Features
 
 ### Project Management
 - Create, update, and delete projects
@@ -158,22 +175,31 @@ http://localhost:3000
 
 ---
 
-## 🔗 Project References
+## Project References
 
 - Frontend Repo: https://github.com/BAlshowaikh/CoHub-FE
 - Backend Repo: https://github.com/BAlshowaikh/CoHub-BE
 
 ---
 
-## 📄 Credits
-
-Developed by **Batool Alshowaikh**, **Ali Tulefat**, **Hassan**
-
----
-
-## 🚀 Future Enhancements
+## Future Enhancements
 
 - Integrate link to github feature on project creation.
 - Add group chat feature for project.
 - Add notification feature to be sent to PM once task status is changed.
+
+
+---
+
+## Credits
+
+Developed by 
+
+**Batool Alshowaikh** - Backend and frontend for `Task` & `Auth` style.
+
+**Ali Tulefat** - Backend and frontend for `Teams` & `JWT`backend.
+
+**Hassan**
+Backend and frontend for `Projects`.
+
 
