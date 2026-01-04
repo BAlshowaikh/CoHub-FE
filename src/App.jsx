@@ -81,7 +81,7 @@ const App = () => {
           />
 
 
-          <Route path="/project" element={<ProjectList />} />
+          <Route path="/projects" element={<ProjectList />} />
           <Route path="/project/add" element={<NewProject />} />
           <Route path="/project/:projectId" element={<ProjectDetails />} />
           <Route path="/teams" element={<TeamsList user={user} />} />
