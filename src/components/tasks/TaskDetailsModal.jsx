@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { tasksApi } from "../../services/api/tasks.api";
+import { useEffect, useState } from "react"
+import { tasksApi } from "../../services/api/tasks.api"
 
 /**
  * TaskDetailsModal
@@ -7,38 +7,38 @@ import { tasksApi } from "../../services/api/tasks.api";
  * - Fetches task details when opened
  */
 const TaskDetailsModal = ({ show, taskId, onClose }) => {
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
-  const [task, setTask] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const [err, setErr] = useState("")
+  const [task, setTask] = useState(null)
 
   useEffect(() => {
     const load = async () => {
-      if (!show || !taskId) return;
+      if (!show || !taskId) return
 
       try {
-        setErr("");
-        setLoading(true);
+        setErr("")
+        setLoading(true)
 
-        const res = await tasksApi.getTaskDetails(taskId);
+        const res = await tasksApi.getTaskDetails(taskId)
         // backend returns: { data: task }
-        setTask(res?.data || null);
+        setTask(res?.data || null)
       } catch (e) {
-        setErr(e?.response?.data?.message || e.message || "Failed to load task details");
+        setErr(e?.response?.data?.message || e.message || "Failed to load task details")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    load();
-  }, [show, taskId]);
+    load()
+  }, [show, taskId])
 
-  if (!show) return null;
+  if (!show) return null
 
-  const title = task?.title || "Task";
-  const description = task?.description || "—";
-  const dueDate = formatDueDate(task?.dueDate);
-  const status = (task?.status || "todo").toLowerCase();
-  const assignedTo = formatAssignedTo(task?.assignedTo);
+  const title = task?.title || "Task"
+  const description = task?.description || "—"
+  const dueDate = formatDueDate(task?.dueDate)
+  const status = (task?.status || "todo").toLowerCase()
+  const assignedTo = formatAssignedTo(task?.assignedTo)
 
   return (
     <>
@@ -111,30 +111,30 @@ const Field = ({ label, children }) => {
 }
 
 const formatDueDate = (dueDate) => {
-  if (!dueDate) return "—";
-  const d = new Date(dueDate);
-  if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString(undefined, { day: "2-digit", month: "short" });
+  if (!dueDate) return "—"
+  const d = new Date(dueDate)
+  if (Number.isNaN(d.getTime())) return "—"
+  return d.toLocaleDateString(undefined, { day: "2-digit", month: "short" })
 }
 
 const statusLabel = (status) => {
-  if (status === "todo") return "To Do";
-  if (status === "doing") return "In Progress";
-  if (status === "done") return "Done";
+  if (status === "todo") return "To Do"
+  if (status === "doing") return "In Progress"
+  if (status === "done") return "Done"
   return status;
 }
 
 const statusBadgeClass = (status) => {
-  if (status === "doing") return "text-bg-primary-subtle text-primary";
-  if (status === "todo") return "text-bg-secondary-subtle text-secondary";
-  if (status === "done") return "text-bg-success-subtle text-success";
-  return "text-bg-light";
+  if (status === "doing") return "text-bg-primary-subtle text-primary"
+  if (status === "todo") return "text-bg-secondary-subtle text-secondary"
+  if (status === "done") return "text-bg-success-subtle text-success"
+  return "text-bg-light"
 }
 
 const formatAssignedTo = (assignedTo) => {
-  if (!assignedTo) return "—";
-  if (typeof assignedTo === "string") return assignedTo; // id only
-  return assignedTo.fullname || assignedTo.username || assignedTo.email || "—";
+  if (!assignedTo) return "—"
+  if (typeof assignedTo === "string") return assignedTo
+  return assignedTo.fullname || assignedTo.username || assignedTo.email || "—"
 }
 
 export default TaskDetailsModal

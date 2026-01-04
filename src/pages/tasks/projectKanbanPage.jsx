@@ -141,7 +141,7 @@ const ProjectKanbanPage = () => {
     <div className="p-4">
       {/* Navigation and Header Row */}
       <div className="mb-2">
-        <Link to="/project" className="text-decoration-none text-muted d-flex align-items-center gap-1">
+        <Link to="/projects" className="text-decoration-none text-muted d-flex align-items-center gap-1">
           <i className="bi bi-arrow-left"></i>
           <span>Back to projects</span>
         </Link>

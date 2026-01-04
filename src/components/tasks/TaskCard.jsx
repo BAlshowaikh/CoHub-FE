@@ -29,7 +29,7 @@ const formatDueDate = (dueDate) => {
 }
   const d = new Date(dueDate);
   if (Number.isNaN(d.getTime())) return "No due date";
-  return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
+  return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" })
 }
 
 const TaskCard = ({task, index, onViewDetails, onEdit, onDelete, canEditAndDelete}) => {

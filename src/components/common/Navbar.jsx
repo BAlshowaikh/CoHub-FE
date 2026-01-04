@@ -45,7 +45,7 @@ const Nav = ({ user, handleLogOut }) => {
               </div>
 
               {/* Everyone logged-in sees Projects */}
-              <NavLink className="cohub-nav__link" to="/project">
+              <NavLink className="cohub-nav__link" to="/projects">
                 Projects
               </NavLink>
 
