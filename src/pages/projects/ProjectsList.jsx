@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react"
 import Project from "../../components/projects/Project"
 import { GetAllProjects } from "../../services/api/Projects.api.js"
@@ -44,3 +45,4 @@ const ProjectList = () => {
 }
 
 export default ProjectList
+

@@ -44,3 +44,12 @@ export const createProject = async (data) => {
     throw error
   }
 }
+
+export const getProjectAssignees = async (projectId) => {
+  try {
+    const res = await Client.get(`/project/${projectId}/assignees`)
+    return res.data
+  } catch (error) {
+    throw error
+  }
+}

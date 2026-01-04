@@ -1,11 +1,10 @@
 // ----------- Imports -----------
-// Notes: useMemo is a hook used for performance optimization. It memoizes (caches) the result of a 
-// calculation so that it isn't re-run on every render
 import { useEffect, useMemo, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom" // Added Link for navigation
 
-import { tasksApi } from "../../services/api/tasks.api" // Imports all attached BE endpoints
-import { groupByStatus } from "../../utils/tasks.utils" // For kanban grouping
+import { tasksApi } from "../../services/api/tasks.api" 
+import { getProject } from "../../services/api/projects.api" // Ensure this matches your export name
+import { groupByStatus } from "../../utils/tasks.utils" 
 import { getStoredUser, isPMUser } from "../../utils/user.utils"
 
 import KanbanBoard from "../../components/tasks/KanbanBoard"
@@ -15,8 +14,9 @@ import TaskFormModal from "../../components/tasks/TaskFormModal"
 import "../../assets/styles/kanban.css"
 
 const ProjectKanbanPage = () => {
-  const { projectId } = useParams() // to get the project's tasks
+  const { projectId } = useParams() 
 
+  const [projectName, setProjectName] = useState("Project")
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState("")
@@ -37,7 +37,7 @@ const ProjectKanbanPage = () => {
 
   // Handle Create/Edit form modal
   const [formOpen, setFormOpen] = useState(false)
-  const [formMode, setFormMode] = useState("create") // "create" by default
+  const [formMode, setFormMode] = useState("create") 
 
   const user = getStoredUser()
   const isPM = isPMUser(user)
@@ -53,6 +53,10 @@ const ProjectKanbanPage = () => {
   }
 
   const openEditTask = (taskId) => {
+    if (!isPM) {
+      setErr("PM only")
+      return
+    }
     setFormMode("edit")
     setSelectedTaskId(taskId)
     setFormOpen(true)
@@ -63,77 +67,116 @@ const ProjectKanbanPage = () => {
     setSelectedTaskId(null)
   }
 
-  // ---------- Function 1 : Fetch tasks for project -------------
-  const loadProjectTasks = async () => {
+  // ---------- Function 1 : Fetch project details (for Name) -------------
+  const loadProjectData = async () => {
     try {
-      // Clear any previous errors and change the loading state
-      setErr("")
-      setLoading(true)
+      // Fetch project details to get the name
+      const projectRes = await getProject(projectId)
+      setProjectName(projectRes?.name || "Project")
+    } catch (e) {
+      console.error("Failed to load project details", e)
+    }
+  }
 
-      // Call the FE endpoint that communicates witb the BE by sending "/tasks" endpoint to the BE
+  // ---------- Function 2 : Fetch tasks for project -------------
+  const loadProjectTasks = async (showLoading = true, keepError = false) => {
+    try {
+      if (!keepError) setErr("") 
+      if (showLoading) setLoading(true)
+
       const res = await tasksApi.getTasksByProject(projectId)
-
       setTasks(res?.data || [])
     } catch (e) {
       setErr(e?.response?.data?.message || e.message || "Failed to load tasks")
     } finally {
-      setLoading(false)
+      if (showLoading) setLoading(false)
     }
   }
 
-  // If the projectId query is being passed call the function 
+  // Effect to load everything on mount
   useEffect(() => {
+    loadProjectData()
     loadProjectTasks()
   }, [projectId])
 
   // Group tasks for Kanban columns
   const grouped = useMemo(() => groupByStatus(tasks), [tasks])
 
-  // ------ Function 2: Update status ------
-  const onDropTask  = async (taskId, nextStatus) => {
-    // Find the dragged task
+  // ------ Function 3: Update status (Drag and Drop) ------
+  const onDropTask = async (taskId, nextStatus) => {
     const currentTask = tasks.find(
       task => String(task._id || task.id) === String(taskId)
     )
-    // Safe exit if not found
-    if (!currentTask){
+
+    if (!currentTask) {
       await loadProjectTasks()
       return
     }
 
-    const currentStatus = String(currentTask.status || "").toLowerCase()
+    const currentStatus = String(currentTask.status || "").toLowerCase();
 
-    // If dragged in the same column (the task status isn't changed)
-    if (currentStatus === nextStatus){
+    if (currentStatus === nextStatus) {
       return
     }
 
     try {
-      setErr("");
+      setErr("")
       await tasksApi.updateTaskStatus(taskId, nextStatus)
-      // reload tasks after update
-      await loadProjectTasks()
+      await loadProjectTasks(false)
     } catch (e) {
-      setErr(e?.response?.data?.message || e.message || "Failed to update status")
-      await loadProjectTasks()
+      const msg = e?.response?.data?.message || e.message || "Failed to update status"
+      setErr(msg)
+
+      // Snap card back but keep the error visible
+      await loadProjectTasks(false, true)
+
+      // Auto-clear error after 5s
+      setTimeout(() => setErr(""), 5000)
     }
   }
 
-  if (loading) return <div className="p-4">Loading tasks...</div>
-  if (err) return <div className="alert alert-danger m-4">{err}</div>
-
+  if (loading) return <div className="p-4">Loading Kanban...</div>
 
   return (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold">Project Kanban</h2>
+      {/* Navigation and Header Row */}
+      <div className="mb-2">
+        <Link to="/projects" className="text-decoration-none text-muted d-flex align-items-center gap-1">
+          <i className="bi bi-arrow-left"></i>
+          <span>Back to projects</span>
+        </Link>
       </div>
+
+      <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 className="fw-bold mb-0">{projectName} Kanban</h2>
+        {isPM && (
+          <button 
+            className="btn text-white px-4" 
+            style={{ backgroundColor: "#20222F" }}
+            onClick={openCreateTask}
+          >
+            <i className="bi bi-plus-lg me-2"></i>
+            Add Task
+          </button>
+        )}
+      </div>
+
+      {/* Error Banner */}
+      {err && (
+        <div className="alert alert-danger alert-dismissible fade show mb-4 shadow-sm" role="alert">
+          <i className="bi bi-exclamation-triangle-fill me-2"></i>
+          <strong>Invalid Move: </strong>{err}
+          <button type="button" className="btn-close" onClick={() => setErr("")}></button>
+        </div>
+      )}
+
       <div className="kanban-wrapper">
         <KanbanBoard 
           grouped={grouped} 
           onDropTask={onDropTask} 
           onViewDetails={openDetails} 
           onEditTask={openEditTask} 
+          isPM={isPM}
         />
       </div>
 
@@ -149,7 +192,7 @@ const ProjectKanbanPage = () => {
         projectId={projectId} 
         taskId={selectedTaskId} 
         onClose={closeForm} 
-        onSaved={loadProjectTasks}
+        onSaved={() => loadProjectTasks(false)}
       />
     </div>
   )

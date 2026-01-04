@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { GetTeams } from "../../services/api/endpoints"
+import { GetTeams } from "../../services/api/teams.api"
+import {isPMUser} from "../../utils/user.utils"
 
 const Feed = ({ user }) => {
   const navigate = useNavigate()
@@ -32,7 +33,7 @@ const Feed = ({ user }) => {
     <div>
       <h1>Welcome {user.name}</h1>
       <h2>Teams Overview</h2>
-      {user.role === "Manager" && (
+      {isPMUser && (
         <button onClick={() => navigate("/teams/add")}>
           Create New Team
         </button>
