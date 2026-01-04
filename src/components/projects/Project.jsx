@@ -1,10 +1,15 @@
-const Project = ({title,role,date}) =>{
-  return(
-<div className="Aproject">
-  <h3>{title}</h3>
-  <p>{role}</p>
-  <p>{date}</p>
-</div>
-)}
+
+import { Link } from "react-router-dom"
+const Project = ({ project }) => {
+  return (
+    <Link to={`/project/${project._id}`} className="project-card">
+      <div className="Aproject">
+        <h3>{project.name}</h3>
+        <p>{project.description}</p>
+        <p>{project.deadline}</p>
+      </div>
+    </Link>
+  )
+}
 
 export default Project
