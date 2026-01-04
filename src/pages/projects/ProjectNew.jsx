@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { createProject } from "../../services/api/Projects.api"
-import { GetTeams } from "../../services/api/endpoints"
+import { GetTeams } from "../../services/api/teams.api"
 
 const NewProject = () => {
   const navigate = useNavigate()

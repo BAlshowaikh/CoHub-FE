@@ -1,9 +1,9 @@
 // ----------- Imports -----------
 import { useEffect, useMemo, useState } from "react"
-import { useParams, Link } from "react-router-dom" // Added Link for navigation
+import { useParams, Link } from "react-router-dom"
 
 import { tasksApi } from "../../services/api/tasks.api" 
-import { getProject } from "../../services/api/projects.api" // Ensure this matches your export name
+import { getProject } from "../../services/api/projects.api" 
 import { groupByStatus } from "../../utils/tasks.utils" 
 import { getStoredUser, isPMUser } from "../../utils/user.utils"
 
@@ -141,7 +141,7 @@ const ProjectKanbanPage = () => {
     <div className="p-4">
       {/* Navigation and Header Row */}
       <div className="mb-2">
-        <Link to="/projects" className="text-decoration-none text-muted d-flex align-items-center gap-1">
+        <Link to="/project" className="text-decoration-none text-muted d-flex align-items-center gap-1">
           <i className="bi bi-arrow-left"></i>
           <span>Back to projects</span>
         </Link>
