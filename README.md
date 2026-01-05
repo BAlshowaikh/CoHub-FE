@@ -28,7 +28,9 @@ It enables users to organize work into projects, assign tasks, track progress th
 
 ## Deployed Application
 
-**Live App:** *(To be added)*
+**Live App:** 
+[Cohub FE](https://cohub-ten.vercel.app)
+[Cohub BE](https://cohub-be.onrender.com)
 
 ---
 ## Screenshots

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useParams, Link } from "react-router-dom"
 
 import { tasksApi } from "../../services/api/tasks.api" 
-import { getProject } from "../../services/api/projects.api" 
+import { getProject } from "../../services/api/Projects.api" 
 import { groupByStatus } from "../../utils/tasks.utils" 
 import { getStoredUser, isPMUser } from "../../utils/user.utils"
 
@@ -26,13 +26,13 @@ const ProjectKanbanPage = () => {
   const [detailsOpen, setDetailsOpen] = useState(false)
 
   const openDetails = (taskId) => {
-    setSelectedTaskId(taskId);
-    setDetailsOpen(true);
+    setSelectedTaskId(taskId)
+    setDetailsOpen(true)
   }
 
   const closeDetails = () => {
-    setDetailsOpen(false);
-    setSelectedTaskId(null);
+    setDetailsOpen(false)
+    setSelectedTaskId(null)
   }
 
   // Handle Create/Edit form modal
